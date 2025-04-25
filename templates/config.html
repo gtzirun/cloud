@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置第三方推流地址</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">配置第三方推流地址</h2>
+        <form id="config_form">
+            <div class="mb-4">
+                <label class="block text-gray-700">流密钥</label>
+                <input id="stream_key" name="stream_key" type="text" class="w-full p-2 border rounded" placeholder="输入流密钥">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700">第三方推流地址</label>
+                <input id="third_party_url" name="third_party_url" type="text" class="w-full p-2 border rounded" placeholder="输入第三方地址">
+            </div>
+            <button type="button" onclick="configureThirdParty()" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">配置</button>
+        </form>
+        <div id="result" class="mt-4"></div>
+    </div>
+    <script>
+        async function configureThirdParty() {
+            const form = document.getElementById('config_form');
+            const formData = new FormData(form);
+            const response = await fetch('/configure_third_party', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            if (data.status === 'success') {
+                resultDiv.innerHTML = `<p class="text-green-500">成功: ${data.message}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p class="text-red-500">错误: ${data.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
