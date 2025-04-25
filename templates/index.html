@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成推流地址</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">生成推流地址</h2>
+        <form id="push_url_form">
+            <div class="mb-4">
+                <label class="block text-gray-700">客户端 ID</label>
+                <input id="client_id" name="client_id" type="text" class="w-full p-2 border rounded" placeholder="输入客户端 ID">
+            </div>
+            <button type="button" onclick="generatePushUrl()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">生成</button>
+        </form>
+        <div id="result" class="mt-4"></div>
+    </div>
+    <script>
+        async function generatePushUrl() {
+            const form = document.getElementById('push_url_form');
+            const formData = new FormData(form);
+            const response = await fetch('/generate_push_url', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            const resultDiv = document.getElementById('result');
+            if (data.status === 'success') {
+                resultDiv.innerHTML = `
+                    <p><strong>推流地址:</strong> ${data.push_url}</p>
+                    <p><strong>流密钥:</strong> ${data.stream_key}</p>
+                    <p><strong>第三方地址:</strong> ${data.third_party_url}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = `<p class="text-red-500">错误: ${data.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
